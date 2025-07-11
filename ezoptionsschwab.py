@@ -37,7 +37,91 @@ def init_db():
                     date TEXT NOT NULL
                 )
             ''')
+            # Add centroid data table
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS centroid_data (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    ticker TEXT NOT NULL,
+                    timestamp INTEGER NOT NULL,
+                    price REAL NOT NULL,
+                    call_centroid REAL NOT NULL,
+                    put_centroid REAL NOT NULL,
+                    call_volume INTEGER NOT NULL,
+                    put_volume INTEGER NOT NULL,
+                    date TEXT NOT NULL
+                )
+            ''')
             conn.commit()
+
+# Function to store centroid data
+def store_centroid_data(ticker, price, calls, puts):
+    """Store call and put centroid data for 15-minute intervals"""
+    current_time = int(time.time())
+    current_date = datetime.now().strftime('%Y-%m-%d')
+    
+    # Round to nearest 15-minute interval (900 seconds)
+    interval_timestamp = (current_time // 900) * 900
+    
+    # Check if we already have data for this 15-minute interval
+    with closing(sqlite3.connect('options_data.db')) as conn:
+        with closing(conn.cursor()) as cursor:
+            cursor.execute('''
+                SELECT id FROM centroid_data 
+                WHERE ticker = ? AND timestamp = ? AND date = ?
+            ''', (ticker, interval_timestamp, current_date))
+            
+            if cursor.fetchone():
+                return  # Data already exists for this interval
+    
+    # Calculate centroids (volume-weighted average strike prices)
+    call_centroid = 0
+    put_centroid = 0
+    call_volume = 0
+    put_volume = 0
+    
+    if not calls.empty:
+        # Filter out zero volume options
+        calls_with_volume = calls[calls['volume'] > 0]
+        if not calls_with_volume.empty:
+            call_volume = int(calls_with_volume['volume'].sum())
+            # Calculate weighted average strike price
+            weighted_strikes = calls_with_volume['strike'] * calls_with_volume['volume']
+            call_centroid = weighted_strikes.sum() / call_volume
+    
+    if not puts.empty:
+        # Filter out zero volume options
+        puts_with_volume = puts[puts['volume'] > 0]
+        if not puts_with_volume.empty:
+            put_volume = int(puts_with_volume['volume'].sum())
+            # Calculate weighted average strike price
+            weighted_strikes = puts_with_volume['strike'] * puts_with_volume['volume']
+            put_centroid = weighted_strikes.sum() / put_volume
+    
+    # Only store if we have volume data
+    if call_volume > 0 or put_volume > 0:
+        with closing(sqlite3.connect('options_data.db')) as conn:
+            with closing(conn.cursor()) as cursor:
+                cursor.execute('''
+                    INSERT INTO centroid_data (ticker, timestamp, price, call_centroid, put_centroid, call_volume, put_volume, date)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                ''', (ticker, interval_timestamp, price, call_centroid, put_centroid, call_volume, put_volume, current_date))
+                conn.commit()
+
+# Function to get centroid data
+def get_centroid_data(ticker, date=None):
+    """Get centroid data for a specific date"""
+    if date is None:
+        date = datetime.now().strftime('%Y-%m-%d')
+    
+    with closing(sqlite3.connect('options_data.db')) as conn:
+        with closing(conn.cursor()) as cursor:
+            cursor.execute('''
+                SELECT timestamp, price, call_centroid, put_centroid, call_volume, put_volume
+                FROM centroid_data
+                WHERE ticker = ? AND date = ?
+                ORDER BY timestamp
+            ''', (ticker, date))
+            return cursor.fetchall()
 
 # Function to store interval data
 def store_interval_data(ticker, price, strike_range, calls, puts):
@@ -117,6 +201,10 @@ def clear_old_data():
         with closing(conn.cursor()) as cursor:
             cursor.execute('''
                 DELETE FROM interval_data
+                WHERE date < ?
+            ''', (today,))
+            cursor.execute('''
+                DELETE FROM centroid_data
                 WHERE date < ?
             ''', (today,))
             conn.commit()
@@ -1944,6 +2032,152 @@ def create_premium_chart(calls, puts, S, strike_range=0.02, call_color='#00FF00'
     
     return fig.to_json()
 
+def create_centroid_chart(ticker, call_color='#00FF00', put_color='#FF0000', selected_expiries=None):
+    """Create a chart showing call and put centroids over time with price line"""
+    # Get centroid data from database
+    centroid_data = get_centroid_data(ticker)
+    
+    if not centroid_data:
+        # Return empty chart if no data
+        fig = go.Figure()
+        fig.update_layout(
+            title=dict(
+                text='Call vs Put Centroid Map (No Data)',
+                font=dict(color='#CCCCCC', size=24),
+                x=0.5,
+                xanchor='center'
+            ),
+            plot_bgcolor='#1E1E1E',
+            paper_bgcolor='#1E1E1E',
+            font=dict(color='#CCCCCC', size=16),
+            xaxis=dict(title='Time', title_font=dict(color='#CCCCCC', size=18), tickfont=dict(color='#CCCCCC', size=16)),
+            yaxis=dict(title='Price/Strike', title_font=dict(color='#CCCCCC', size=18), tickfont=dict(color='#CCCCCC', size=16)),
+            height=800,
+            width=1200
+        )
+        return fig.to_json()
+    
+    # Convert data to lists for plotting
+    timestamps = []
+    prices = []
+    call_centroids = []
+    put_centroids = []
+    call_volumes = []
+    put_volumes = []
+    
+    for row in centroid_data:
+        timestamp, price, call_centroid, put_centroid, call_volume, put_volume = row
+        dt = datetime.fromtimestamp(timestamp)
+        timestamps.append(dt)
+        prices.append(price)
+        call_centroids.append(call_centroid if call_centroid > 0 else None)
+        put_centroids.append(put_centroid if put_centroid > 0 else None)
+        call_volumes.append(call_volume)
+        put_volumes.append(put_volume)
+    
+    # Create figure
+    fig = go.Figure()
+    
+    # Add call centroid line (top layer)
+    fig.add_trace(go.Scatter(
+        x=timestamps,
+        y=call_centroids,
+        mode='lines',
+        name='Call Centroid',
+        line=dict(color=call_color, width=2),
+        hovertemplate='Time: %{x}<br>Call Centroid: $%{y:.2f}<br>Call Volume: %{customdata}<extra></extra>',
+        customdata=call_volumes,
+        connectgaps=False
+    ))
+    
+    # Add put centroid line (middle layer)
+    fig.add_trace(go.Scatter(
+        x=timestamps,
+        y=put_centroids,
+        mode='lines',
+        name='Put Centroid',
+        line=dict(color=put_color, width=2),
+        hovertemplate='Time: %{x}<br>Put Centroid: $%{y:.2f}<br>Put Volume: %{customdata}<extra></extra>',
+        customdata=put_volumes,
+        connectgaps=False
+    ))
+    
+    # Add price line last (bottom layer)
+    fig.add_trace(go.Scatter(
+        x=timestamps,
+        y=prices,
+        mode='lines',
+        name='Price',
+        line=dict(color='gold', width=2),
+        hovertemplate='Time: %{x}<br>Price: $%{y:.2f}<extra></extra>'
+    ))
+    
+    # Add expiry info to title if multiple expiries are selected
+    chart_title = 'Call vs Put Centroid Map'
+    if selected_expiries and len(selected_expiries) > 1:
+        chart_title = f"Call vs Put Centroid Map ({len(selected_expiries)} expiries)"
+    
+    # Update layout to match interval map style
+    fig.update_layout(
+        title=dict(
+            text=chart_title,
+            font=dict(color='#CCCCCC', size=24),
+            x=0.5,
+            xanchor='center'
+        ),
+        xaxis=dict(
+            title='Time',
+            title_font=dict(color='#CCCCCC', size=18),
+            tickfont=dict(color='#CCCCCC', size=16),
+            gridcolor='#333333',
+            linecolor='#333333',
+            showgrid=False,
+            zeroline=True,
+            zerolinecolor='#333333',
+            tickformat='%H:%M',
+            showticklabels=True,
+            ticks='outside',
+            ticklen=5,
+            tickwidth=1,
+            tickcolor='#CCCCCC',
+            automargin=True
+        ),
+        yaxis=dict(
+            title='Price/Strike',
+            title_font=dict(color='#CCCCCC', size=18),
+            tickfont=dict(color='#CCCCCC', size=16),
+            gridcolor='#333333',
+            linecolor='#333333',
+            showgrid=False,
+            zeroline=True,
+            zerolinecolor='#333333'
+        ),
+        plot_bgcolor='#1E1E1E',
+        paper_bgcolor='#1E1E1E',
+        font=dict(color='#CCCCCC', size=16),
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1,
+            font=dict(color='#CCCCCC', size=16),
+            bgcolor='#1E1E1E'
+        ),
+        margin=dict(l=50, r=50, t=50, b=50),
+        showlegend=True,
+        height=800,
+        width=1200
+    )
+    
+    # Add hover spikes
+    fig.update_xaxes(showspikes=True, spikecolor='#CCCCCC', spikethickness=1)
+    fig.update_yaxes(showspikes=True, spikecolor='#CCCCCC', spikethickness=1)
+    
+    # Convert figure to image with higher scale factor
+    img_bytes = fig.to_image(format="png", width=1200, height=800, scale=2)
+    return img_bytes
+
 def infer_side(last, bid, ask):
     # If last is closer to ask, it's a buy; if closer to bid, it's a sell
     if abs(last - ask) < abs(last - bid):
@@ -2203,6 +2437,10 @@ def index():
         
         .historical-bubbles-row.three-bubbles {
             grid-template-columns: repeat(3, 1fr);
+        }
+        
+        .historical-bubbles-row.four-bubbles {
+            grid-template-columns: repeat(2, 1fr);
         }
         
         .historical-bubble-container {
@@ -2502,6 +2740,10 @@ def index():
                 <input type="checkbox" id="premium" checked>
                 <label for="premium">Premium by Strike</label>
             </div>
+            <div class="chart-checkbox">
+                <input type="checkbox" id="centroid" checked>
+                <label for="centroid">Call vs Put Centroid Map</label>
+            </div>
         </div>
         
         <div class="chart-grid" id="chart-grid">
@@ -2594,7 +2836,8 @@ def index():
                 show_options_volume: document.getElementById('options_volume').checked,
                 show_volume: document.getElementById('volume').checked,
                 show_large_trades: document.getElementById('large_trades').checked,
-                show_premium: document.getElementById('premium').checked
+                show_premium: document.getElementById('premium').checked,
+                show_centroid: document.getElementById('centroid').checked
             };
             
             fetch('/update', {
@@ -2656,7 +2899,8 @@ def index():
                 options_volume: document.getElementById('options_volume').checked,
                 volume: document.getElementById('volume').checked,
                 large_trades: document.getElementById('large_trades').checked,
-                premium: document.getElementById('premium').checked
+                premium: document.getElementById('premium').checked,
+                centroid: document.getElementById('centroid').checked
             };
             
             // Handle price chart separately
@@ -2733,8 +2977,8 @@ def index():
                 }
             }
             
-            // Handle historical bubble levels
-            const historicalBubbles = ['gex_historical_bubble', 'dex_historical_bubble', 'vanna_historical_bubble'];
+            // Handle historical bubble levels and centroid
+            const historicalBubbles = ['gex_historical_bubble', 'dex_historical_bubble', 'vanna_historical_bubble', 'centroid'];
             const historicalBubblesRow = document.getElementById('historical-bubbles-row');
             
             // Count enabled historical bubble levels
@@ -2757,6 +3001,8 @@ def index():
                     historicalBubblesRow.classList.add('two-bubbles');
                 } else if (enabledBubbles.length === 3) {
                     historicalBubblesRow.classList.add('three-bubbles');
+                } else if (enabledBubbles.length === 4) {
+                    historicalBubblesRow.classList.add('four-bubbles');
                 }
                 
                 // Add or update selected historical bubble levels
@@ -3149,6 +3395,9 @@ def update():
         # Store interval data
         store_interval_data(ticker, S, strike_range, calls, puts)
         
+        # Store centroid data
+        store_centroid_data(ticker, S, calls, puts)
+        
         # Clear old data at the end of the day
         current_time = datetime.now()
         if current_time.hour == 23 and current_time.minute == 59:
@@ -3256,6 +3505,10 @@ def update():
         if data.get('show_large_trades', True):
             response['large_trades'] = create_large_trades_table(calls, puts, S, strike_range, call_color, put_color, expiry_dates)
         
+        if data.get('show_centroid', True):
+            img_bytes = create_centroid_chart(ticker, call_color, put_color, expiry_dates)
+            if img_bytes:
+                response['centroid'] = f"data:image/png;base64,{base64.b64encode(img_bytes).decode('utf-8')}"
 
         
         # Add volume data to response

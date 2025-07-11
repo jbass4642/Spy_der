@@ -55,9 +55,23 @@ def init_db():
 
 # Function to store centroid data
 def store_centroid_data(ticker, price, calls, puts):
-    """Store call and put centroid data for 15-minute intervals"""
-    current_time = int(time.time())
-    current_date = datetime.now().strftime('%Y-%m-%d')
+    """Store call and put centroid data for 15-minute intervals during market hours only"""
+    # Get current time in Eastern Time
+    est = pytz.timezone('US/Eastern')
+    current_time_est = datetime.now(est)
+    
+    # Check if we're in market hours (9:30 AM - 4:00 PM ET, Monday-Friday)
+    if current_time_est.weekday() >= 5:  # Weekend
+        return
+    
+    market_open = current_time_est.replace(hour=9, minute=30, second=0, microsecond=0)
+    market_close = current_time_est.replace(hour=16, minute=0, second=0, microsecond=0)
+    
+    if not (market_open <= current_time_est <= market_close):
+        return  # Outside market hours
+    
+    current_time = int(current_time_est.timestamp())
+    current_date = current_time_est.strftime('%Y-%m-%d')
     
     # Round to nearest 15-minute interval (900 seconds)
     interval_timestamp = (current_time // 900) * 900
@@ -109,9 +123,12 @@ def store_centroid_data(ticker, price, calls, puts):
 
 # Function to get centroid data
 def get_centroid_data(ticker, date=None):
-    """Get centroid data for a specific date"""
+    """Get centroid data for current trading session only (market hours)"""
     if date is None:
-        date = datetime.now().strftime('%Y-%m-%d')
+        # Get current date in Eastern Time
+        est = pytz.timezone('US/Eastern')
+        current_date_est = datetime.now(est).strftime('%Y-%m-%d')
+        date = current_date_est
     
     with closing(sqlite3.connect('options_data.db')) as conn:
         with closing(conn.cursor()) as cursor:
@@ -121,7 +138,24 @@ def get_centroid_data(ticker, date=None):
                 WHERE ticker = ? AND date = ?
                 ORDER BY timestamp
             ''', (ticker, date))
-            return cursor.fetchall()
+            
+            # Filter data to only include market hours (9:30 AM - 4:00 PM ET)
+            all_data = cursor.fetchall()
+            filtered_data = []
+            
+            for row in all_data:
+                timestamp = row[0]
+                # Convert timestamp to Eastern Time
+                dt_est = datetime.fromtimestamp(timestamp, pytz.timezone('US/Eastern'))
+                
+                # Check if within market hours
+                market_open = dt_est.replace(hour=9, minute=30, second=0, microsecond=0)
+                market_close = dt_est.replace(hour=16, minute=0, second=0, microsecond=0)
+                
+                if market_open <= dt_est <= market_close and dt_est.weekday() < 5:
+                    filtered_data.append(row)
+            
+            return filtered_data
 
 # Function to store interval data
 def store_interval_data(ticker, price, strike_range, calls, puts):
@@ -195,7 +229,8 @@ def get_interval_data(ticker, date=None):
 # Function to clear old data
 def clear_old_data():
     """Clear data from previous days, keeping only today's data"""
-    today = datetime.now().strftime('%Y-%m-%d')
+    est = pytz.timezone('US/Eastern')
+    today = datetime.now(est).strftime('%Y-%m-%d')
     
     with closing(sqlite3.connect('options_data.db')) as conn:
         with closing(conn.cursor()) as cursor:
@@ -210,13 +245,37 @@ def clear_old_data():
             conn.commit()
             print(f"Cleared old data from database. Kept data from {today}")
 
+# Function to clear centroid data for new session
+def clear_centroid_session_data(ticker):
+    """Clear centroid data at the start of a new trading session"""
+    est = pytz.timezone('US/Eastern')
+    today = datetime.now(est).strftime('%Y-%m-%d')
+    
+    with closing(sqlite3.connect('options_data.db')) as conn:
+        with closing(conn.cursor()) as cursor:
+            cursor.execute('''
+                DELETE FROM centroid_data
+                WHERE ticker = ? AND date = ?
+            ''', (ticker, today))
+            conn.commit()
+            print(f"Cleared centroid data for new session: {ticker} on {today}")
+
 # Initialize database
 init_db()
 
 # Clear old data at the start of the day
-current_time = datetime.now()
-if current_time.hour == 0 and current_time.minute == 0:
+est = pytz.timezone('US/Eastern')
+current_time_est = datetime.now(est)
+
+# Clear old data at midnight ET
+if current_time_est.hour == 0 and current_time_est.minute == 0:
     clear_old_data()
+
+# Clear centroid data at market open (9:30 AM ET) for a fresh session
+if current_time_est.hour == 9 and current_time_est.minute == 30 and current_time_est.weekday() < 5:
+    # Note: This will clear centroid data for all tickers at market open
+    # Individual ticker clearing happens in the update route when first accessed
+    pass
 
 # Global variables for streaming
 current_chain = {'calls': [], 'puts': []}
@@ -2034,15 +2093,29 @@ def create_premium_chart(calls, puts, S, strike_range=0.02, call_color='#00FF00'
 
 def create_centroid_chart(ticker, call_color='#00FF00', put_color='#FF0000', selected_expiries=None):
     """Create a chart showing call and put centroids over time with price line"""
+    # Check if we're in market hours
+    est = pytz.timezone('US/Eastern')
+    current_time_est = datetime.now(est)
+    
     # Get centroid data from database
     centroid_data = get_centroid_data(ticker)
     
     if not centroid_data:
+        # Determine appropriate message based on time
+        if current_time_est.weekday() >= 5:  # Weekend
+            chart_title = 'Call vs Put Centroid Map (Market Closed - Weekend)'
+        elif current_time_est.hour < 9 or (current_time_est.hour == 9 and current_time_est.minute < 30):
+            chart_title = 'Call vs Put Centroid Map (Pre-Market)'
+        elif current_time_est.hour >= 16:
+            chart_title = 'Call vs Put Centroid Map (After Hours)'
+        else:
+            chart_title = 'Call vs Put Centroid Map (No Data)'
+        
         # Return empty chart if no data
         fig = go.Figure()
         fig.update_layout(
             title=dict(
-                text='Call vs Put Centroid Map (No Data)',
+                text=chart_title,
                 font=dict(color='#CCCCCC', size=24),
                 x=0.5,
                 xanchor='center'
@@ -2055,7 +2128,9 @@ def create_centroid_chart(ticker, call_color='#00FF00', put_color='#FF0000', sel
             height=800,
             width=1200
         )
-        return fig.to_json()
+        # Convert figure to image with higher scale factor
+        img_bytes = fig.to_image(format="png", width=1200, height=800, scale=2)
+        return img_bytes
     
     # Convert data to lists for plotting
     timestamps = []
@@ -3394,6 +3469,33 @@ def update():
         
         # Store interval data
         store_interval_data(ticker, S, strike_range, calls, puts)
+        
+        # Check if this is the first access of the day for this ticker and clear centroid data if needed
+        est = pytz.timezone('US/Eastern')
+        current_time_est = datetime.now(est)
+        
+        # Check if we're in a new trading session (after 9:30 AM ET)
+        if (current_time_est.hour == 9 and current_time_est.minute >= 30) or current_time_est.hour > 9:
+            if current_time_est.weekday() < 5:  # Weekday
+                # Check if we have any centroid data from before 9:30 AM today
+                today = current_time_est.strftime('%Y-%m-%d')
+                market_open_timestamp = int(current_time_est.replace(hour=9, minute=30, second=0, microsecond=0).timestamp())
+                
+                with closing(sqlite3.connect('options_data.db')) as conn:
+                    with closing(conn.cursor()) as cursor:
+                        cursor.execute('''
+                            SELECT COUNT(*) FROM centroid_data 
+                            WHERE ticker = ? AND date = ? AND timestamp < ?
+                        ''', (ticker, today, market_open_timestamp))
+                        
+                        pre_market_count = cursor.fetchone()[0]
+                        if pre_market_count > 0:
+                            # Clear pre-market centroid data for a fresh session
+                            cursor.execute('''
+                                DELETE FROM centroid_data 
+                                WHERE ticker = ? AND date = ? AND timestamp < ?
+                            ''', (ticker, today, market_open_timestamp))
+                            conn.commit()
         
         # Store centroid data
         store_centroid_data(ticker, S, calls, puts)

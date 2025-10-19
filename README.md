@@ -1,60 +1,66 @@
-# EzOptions - Schwab Options Trading Dashboard
+cat > README.md <<'EOF'
+# 🕷️ Spy_der — Real-Time SPY Options & Market Dashboard
 
-A real-time options trading dashboard that integrates with the Schwab API to provide comprehensive options analysis and visualization.
+A real-time **SPY options analytics** and **market monitoring dashboard** that integrates with the **Schwab API** to visualize live option chain data, volume, open interest, and volatility metrics.  
+It also automatically sends updates to **Discord** during market hours.
 
 <div align="center">
-  <a href="https://github.com/EazyDuz1t/EzOptions-Schwab">
-    <img src="https://img.shields.io/github/stars/EazyDuz1t/EzOptions-Schwab" alt="GitHub Repo stars"/>
+  <a href="https://github.com/jbass4642/Spy_der">
+    <img src="https://img.shields.io/github/stars/jbass4642/Spy_der" alt="GitHub Repo stars"/>
   </a>
 </div>
 
-## Features
+---
 
-### 📊 Real-Time Data
-- Live options chain data from Schwab API
-- Real-time price updates with auto-refresh
-- Intraday price charts with volume analysis
+## ⚙️ Features
 
-### 📈 Advanced Options Analytics
-- **Gamma Exposure (GEX)** - Visualize market maker hedging flows
-- **Delta Exposure (DEX)** - Track directional exposure
-- **Vanna Exposure** - Analyze volatility-price sensitivity
-- **Charm, Speed, and Vomma** - Advanced Greek exposures
-- **Historical Bubble Levels** - Historical exposure tracking over time
+### 📊 Live Market & Options Data
+- Real-time SPY option chain from Schwab API  
+- Automatic updates every 2 minutes (during market hours)  
+- Discord alerts with annotated charts  
 
-### 🎯 Interactive Charts
-- Customizable strike range filtering
-- Multiple expiration date support
-- Color-coded exposure visualization
-- Heikin-Ashi candlestick charts
-- Volume analysis and ratios
+### 🧠 Advanced Analytics
+- **Put/Call Walls** — identifies major support and resistance  
+- **POC (Point of Control)** — volume-weighted equilibrium level  
+- **Delta, Vanna, and Charm** — visualize option Greek influence  
+- **RSI Tracking** — detects overbought or oversold zones  
+- **VIX Integration** — volatility confirmation signals  
 
-### ⚙️ Flexible Configuration
-- Multiple ticker support (SPY, SPX, etc.)
-- Adjustable strike range percentages
-- Customizable chart colors
-- Toggle between different chart types
-- Auto-update streaming data
+### 🖥️ Dashboard Visuals
+- Interactive Plotly charts  
+- Heikin-Ashi candlesticks for SPY & VIX  
+- Net volume, open interest, total exposure, and IV skew plots  
+- Real-time options table view  
 
-## Installation
+### 🔔 Discord Integration
+- Automatic SPY updates every 2 minutes  
+- Special alerts when price nears the Put Wall or VIX drops  
+- Sends annotated chart images to your Discord server  
+
+---
+
+## 🧩 Installation
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/EazyDuz1t/EzOptions-Schwab
-   cd ezoptions-schwab
+   git clone https://github.com/jbass4642/Spy_der.git
+   cd Spy_der
    ```
-
-2. **Install dependencies**
+2. **Create and activate a virtual environment**
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
+3. **Install dependencies**
    ```bash
    pip install -r requirements.txt
    ```
-
-3. **Set up environment variables**
-   Create a `.env` file in the root directory:
-   ```env
+4. **Set up environment variables**
+   ```bash
    SCHWAB_APP_KEY=your_app_key_here
    SCHWAB_APP_SECRET=your_app_secret_here
-   SCHWAB_CALLBACK_URL=your_callback_url_here
+   SCHWAB_CALLBACK_URL=https://127.0.0.1
+   DISCORD_WEBHOOK=https://discord.com/api/webhooks/your_webhook_here
    ```
 
 ## Schwab API Setup
@@ -77,7 +83,7 @@ A real-time options trading dashboard that integrates with the Schwab API to pro
 
 1. **Start the application**
    ```bash
-   python ezoptionsschwab.py
+   python app.py
    ```
 
 2. **Access the dashboard**
@@ -165,4 +171,7 @@ For issues and questions:
 - Ensure all dependencies are properly installed
 
 ## Contact
-Discord - eazy101
+Josh Bass
+GitHub: @jbass4642
+
+Project: Spy_der

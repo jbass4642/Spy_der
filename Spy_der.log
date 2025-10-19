@@ -1,0 +1,125 @@
+2025-10-09 17:42:10,098 - WARNING - The refresh token has expired!
+2025-10-09 17:44:16,481 - INFO - Refresh and Access tokens updated
+2025-10-09 17:44:16,481 - INFO - Access token expires in 00H:29M:59S
+2025-10-09 17:44:16,481 - INFO - Refresh token expires in 167H:59M:59S
+2025-10-09 17:44:16,481 - INFO - Client Initialization Complete
+2025-10-09 17:44:16,481 - INFO - Schwab client initialized successfully
+2025-10-09 17:44:19,424 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-10-09 17:44:19,435 - INFO - Added job "send_discord_alert" to job store "default"
+2025-10-09 17:44:19,435 - INFO - Scheduler started
+2025-10-09 17:44:19,435 - INFO - Scheduler started
+2025-10-09 17:44:19,435 - INFO - Running job "send_discord_alert (trigger: interval[0:05:00], next run at: 2025-10-09 17:49:19 CDT)" (scheduled at 2025-10-09 17:44:19.424837-05:00)
+2025-10-09 17:44:19,435 - INFO - Starting Discord alert process
+2025-10-09 17:44:19,435 - INFO - Skipping Discord alerts: Outside 8:30 AM - 3:00 PM CDT
+2025-10-09 17:44:19,435 - INFO - Job "send_discord_alert (trigger: interval[0:05:00], next run at: 2025-10-09 17:49:19 CDT)" executed successfully
+2025-10-09 17:44:19,526 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5002
+2025-10-09 17:44:19,526 - INFO - [33mPress CTRL+C to quit[0m
+2025-10-09 17:44:26,892 - INFO - 127.0.0.1 - - [09/Oct/2025 17:44:26] "GET / HTTP/1.1" 200 -
+2025-10-09 17:44:27,010 - INFO - 127.0.0.1 - - [09/Oct/2025 17:44:27] "GET /static/logo.png HTTP/1.1" 200 -
+2025-10-09 17:44:28,933 - INFO - 127.0.0.1 - - [09/Oct/2025 17:44:28] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-10-09 17:44:29,300 - INFO - Fetched 33 expiration dates
+2025-10-09 17:44:29,300 - INFO - Using nearest expiry: 2025-10-09
+2025-10-09 17:44:30,516 - INFO - Fetched 126 call strikes and 126 put strikes
+2025-10-09 17:44:30,532 - INFO - Selected 17 strikes, Volume: Put Wall: 669.0, Call Wall: 672.0, POC: 671.0 | OI: Put Wall: 664.0, Call Wall: 676.0, POC: 672.0 | Total: Put Wall: 669.0, Call Wall: 672.0, POC: 671.0
+2025-10-09 17:44:33,851 - INFO - Fetched 391 1-minute Heikin-Ashi candles for SPY in market hours
+2025-10-09 17:44:34,522 - INFO - Fetched 389 1-minute Heikin-Ashi candles for $VIX in market hours
+2025-10-09 17:44:34,820 - INFO - VIX rise condition met at 2025-10-09 08:32:00: SPY high=673.92, Call Wall=672.00, VIX close=16.36, VIX prev close=16.36
+2025-10-09 17:44:34,820 - INFO - VIX rise condition met at 2025-10-09 08:33:00: SPY high=673.66, Call Wall=672.00, VIX close=16.37, VIX prev close=16.36
+2025-10-09 17:44:34,820 - INFO - VIX rise condition met at 2025-10-09 08:34:00: SPY high=673.57, Call Wall=672.00, VIX close=16.37, VIX prev close=16.37
+2025-10-09 17:44:34,820 - INFO - VIX rise condition met at 2025-10-09 08:35:00: SPY high=673.47, Call Wall=672.00, VIX close=16.38, VIX prev close=16.37
+2025-10-09 17:44:34,820 - INFO - VIX rise condition met at 2025-10-09 08:39:00: SPY high=673.58, Call Wall=672.00, VIX close=16.33, VIX prev close=16.34
+2025-10-09 17:44:34,820 - INFO - VIX rise condition met at 2025-10-09 08:40:00: SPY high=673.58, Call Wall=672.00, VIX close=16.34, VIX prev close=16.33
+2025-10-09 17:44:34,820 - INFO - VIX rise condition met at 2025-10-09 08:41:00: SPY high=673.44, Call Wall=672.00, VIX close=16.38, VIX prev close=16.34
+2025-10-09 17:44:34,820 - INFO - VIX rise condition met at 2025-10-09 08:42:00: SPY high=673.32, Call Wall=672.00, VIX close=16.42, VIX prev close=16.38
+2025-10-09 17:44:34,820 - INFO - VIX rise condition met at 2025-10-09 08:43:00: SPY high=673.12, Call Wall=672.00, VIX close=16.45, VIX prev close=16.42
+2025-10-09 17:44:34,828 - INFO - VIX rise condition met at 2025-10-09 08:44:00: SPY high=673.00, Call Wall=672.00, VIX close=16.49, VIX prev close=16.45
+2025-10-09 17:44:34,828 - INFO - VIX rise condition met at 2025-10-09 08:45:00: SPY high=672.91, Call Wall=672.00, VIX close=16.52, VIX prev close=16.49
+2025-10-09 17:44:34,828 - INFO - VIX rise condition met at 2025-10-09 08:46:00: SPY high=672.78, Call Wall=672.00, VIX close=16.51, VIX prev close=16.52
+2025-10-09 17:44:34,828 - INFO - VIX rise condition met at 2025-10-09 08:47:00: SPY high=672.68, Call Wall=672.00, VIX close=16.52, VIX prev close=16.51
+2025-10-09 17:44:34,828 - INFO - VIX rise condition met at 2025-10-09 08:50:00: SPY high=673.08, Call Wall=672.00, VIX close=16.45, VIX prev close=16.45
+2025-10-09 17:44:34,828 - INFO - VIX rise condition met at 2025-10-09 08:51:00: SPY high=672.97, Call Wall=672.00, VIX close=16.46, VIX prev close=16.45
+2025-10-09 17:44:34,828 - INFO - VIX rise condition met at 2025-10-09 08:52:00: SPY high=672.71, Call Wall=672.00, VIX close=16.55, VIX prev close=16.46
+2025-10-09 17:44:34,828 - INFO - VIX rise condition met at 2025-10-09 08:53:00: SPY high=672.46, Call Wall=672.00, VIX close=16.65, VIX prev close=16.55
+2025-10-09 17:44:34,828 - INFO - VIX rise condition met at 2025-10-09 08:54:00: SPY high=672.27, Call Wall=672.00, VIX close=16.70, VIX prev close=16.65
+2025-10-09 17:44:34,828 - INFO - VIX rise condition met at 2025-10-09 08:55:00: SPY high=672.11, Call Wall=672.00, VIX close=16.74, VIX prev close=16.70
+2025-10-09 17:44:34,835 - INFO - VIX rise condition met at 2025-10-09 08:58:00: SPY high=672.25, Call Wall=672.00, VIX close=16.69, VIX prev close=16.70
+2025-10-09 17:44:34,835 - INFO - VIX rise condition met at 2025-10-09 08:59:00: SPY high=672.23, Call Wall=672.00, VIX close=16.71, VIX prev close=16.69
+2025-10-09 17:44:34,835 - INFO - VIX rise condition met at 2025-10-09 09:00:00: SPY high=672.03, Call Wall=672.00, VIX close=16.77, VIX prev close=16.71
+2025-10-09 17:44:34,835 - INFO - VIX rise condition met at 2025-10-09 09:08:00: SPY high=672.18, Call Wall=672.00, VIX close=16.70, VIX prev close=16.69
+2025-10-09 17:44:34,835 - INFO - VIX rise condition met at 2025-10-09 09:09:00: SPY high=672.01, Call Wall=672.00, VIX close=16.73, VIX prev close=16.70
+2025-10-09 17:44:34,835 - INFO - VIX rise condition met at 2025-10-09 09:10:00: SPY high=672.03, Call Wall=672.00, VIX close=16.74, VIX prev close=16.73
+2025-10-09 17:44:34,835 - INFO - VIX rise condition met at 2025-10-09 09:11:00: SPY high=672.02, Call Wall=672.00, VIX close=16.75, VIX prev close=16.74
+2025-10-09 17:44:34,835 - INFO - VIX rise condition met at 2025-10-09 09:13:00: SPY high=672.07, Call Wall=672.00, VIX close=16.74, VIX prev close=16.73
+2025-10-09 17:44:34,835 - INFO - VIX rise condition met at 2025-10-09 09:14:00: SPY high=672.09, Call Wall=672.00, VIX close=16.74, VIX prev close=16.74
+2025-10-09 17:44:35,311 - INFO - 127.0.0.1 - - [09/Oct/2025 17:44:35] "GET /data HTTP/1.1" 200 -
+2025-10-09 17:44:44,298 - INFO - Fetched 33 expiration dates
+2025-10-09 17:44:44,298 - INFO - Using nearest expiry: 2025-10-09
+2025-10-09 17:44:45,200 - INFO - Fetched 126 call strikes and 126 put strikes
+2025-10-09 17:44:45,208 - INFO - Selected 17 strikes, Volume: Put Wall: 669.0, Call Wall: 672.0, POC: 671.0 | OI: Put Wall: 664.0, Call Wall: 676.0, POC: 672.0 | Total: Put Wall: 669.0, Call Wall: 672.0, POC: 671.0
+2025-10-09 17:44:46,275 - INFO - Fetched 391 1-minute Heikin-Ashi candles for SPY in market hours
+2025-10-09 17:44:46,922 - INFO - Fetched 389 1-minute Heikin-Ashi candles for $VIX in market hours
+2025-10-09 17:44:47,034 - INFO - VIX rise condition met at 2025-10-09 08:32:00: SPY high=673.92, Call Wall=672.00, VIX close=16.36, VIX prev close=16.36
+2025-10-09 17:44:47,034 - INFO - VIX rise condition met at 2025-10-09 08:33:00: SPY high=673.66, Call Wall=672.00, VIX close=16.37, VIX prev close=16.36
+2025-10-09 17:44:47,034 - INFO - VIX rise condition met at 2025-10-09 08:34:00: SPY high=673.57, Call Wall=672.00, VIX close=16.37, VIX prev close=16.37
+2025-10-09 17:44:47,034 - INFO - VIX rise condition met at 2025-10-09 08:35:00: SPY high=673.47, Call Wall=672.00, VIX close=16.38, VIX prev close=16.37
+2025-10-09 17:44:47,042 - INFO - VIX rise condition met at 2025-10-09 08:39:00: SPY high=673.58, Call Wall=672.00, VIX close=16.33, VIX prev close=16.34
+2025-10-09 17:44:47,045 - INFO - VIX rise condition met at 2025-10-09 08:40:00: SPY high=673.58, Call Wall=672.00, VIX close=16.34, VIX prev close=16.33
+2025-10-09 17:44:47,045 - INFO - VIX rise condition met at 2025-10-09 08:41:00: SPY high=673.44, Call Wall=672.00, VIX close=16.38, VIX prev close=16.34
+2025-10-09 17:44:47,045 - INFO - VIX rise condition met at 2025-10-09 08:42:00: SPY high=673.32, Call Wall=672.00, VIX close=16.42, VIX prev close=16.38
+2025-10-09 17:44:47,045 - INFO - VIX rise condition met at 2025-10-09 08:43:00: SPY high=673.12, Call Wall=672.00, VIX close=16.45, VIX prev close=16.42
+2025-10-09 17:44:47,045 - INFO - VIX rise condition met at 2025-10-09 08:44:00: SPY high=673.00, Call Wall=672.00, VIX close=16.49, VIX prev close=16.45
+2025-10-09 17:44:47,045 - INFO - VIX rise condition met at 2025-10-09 08:45:00: SPY high=672.91, Call Wall=672.00, VIX close=16.52, VIX prev close=16.49
+2025-10-09 17:44:47,045 - INFO - VIX rise condition met at 2025-10-09 08:46:00: SPY high=672.78, Call Wall=672.00, VIX close=16.51, VIX prev close=16.52
+2025-10-09 17:44:47,045 - INFO - VIX rise condition met at 2025-10-09 08:47:00: SPY high=672.68, Call Wall=672.00, VIX close=16.52, VIX prev close=16.51
+2025-10-09 17:44:47,045 - INFO - VIX rise condition met at 2025-10-09 08:50:00: SPY high=673.08, Call Wall=672.00, VIX close=16.45, VIX prev close=16.45
+2025-10-09 17:44:47,053 - INFO - VIX rise condition met at 2025-10-09 08:51:00: SPY high=672.97, Call Wall=672.00, VIX close=16.46, VIX prev close=16.45
+2025-10-09 17:44:47,053 - INFO - VIX rise condition met at 2025-10-09 08:52:00: SPY high=672.71, Call Wall=672.00, VIX close=16.55, VIX prev close=16.46
+2025-10-09 17:44:47,053 - INFO - VIX rise condition met at 2025-10-09 08:53:00: SPY high=672.46, Call Wall=672.00, VIX close=16.65, VIX prev close=16.55
+2025-10-09 17:44:47,053 - INFO - VIX rise condition met at 2025-10-09 08:54:00: SPY high=672.27, Call Wall=672.00, VIX close=16.70, VIX prev close=16.65
+2025-10-09 17:44:47,053 - INFO - VIX rise condition met at 2025-10-09 08:55:00: SPY high=672.11, Call Wall=672.00, VIX close=16.74, VIX prev close=16.70
+2025-10-09 17:44:47,053 - INFO - VIX rise condition met at 2025-10-09 08:58:00: SPY high=672.25, Call Wall=672.00, VIX close=16.69, VIX prev close=16.70
+2025-10-09 17:44:47,053 - INFO - VIX rise condition met at 2025-10-09 08:59:00: SPY high=672.23, Call Wall=672.00, VIX close=16.71, VIX prev close=16.69
+2025-10-09 17:44:47,061 - INFO - VIX rise condition met at 2025-10-09 09:00:00: SPY high=672.03, Call Wall=672.00, VIX close=16.77, VIX prev close=16.71
+2025-10-09 17:44:47,061 - INFO - VIX rise condition met at 2025-10-09 09:08:00: SPY high=672.18, Call Wall=672.00, VIX close=16.70, VIX prev close=16.69
+2025-10-09 17:44:47,061 - INFO - VIX rise condition met at 2025-10-09 09:09:00: SPY high=672.01, Call Wall=672.00, VIX close=16.73, VIX prev close=16.70
+2025-10-09 17:44:47,061 - INFO - VIX rise condition met at 2025-10-09 09:10:00: SPY high=672.03, Call Wall=672.00, VIX close=16.74, VIX prev close=16.73
+2025-10-09 17:44:47,064 - INFO - VIX rise condition met at 2025-10-09 09:11:00: SPY high=672.02, Call Wall=672.00, VIX close=16.75, VIX prev close=16.74
+2025-10-09 17:44:47,064 - INFO - VIX rise condition met at 2025-10-09 09:13:00: SPY high=672.07, Call Wall=672.00, VIX close=16.74, VIX prev close=16.73
+2025-10-09 17:44:47,064 - INFO - VIX rise condition met at 2025-10-09 09:14:00: SPY high=672.09, Call Wall=672.00, VIX close=16.74, VIX prev close=16.74
+2025-10-09 17:44:47,962 - INFO - 127.0.0.1 - - [09/Oct/2025 17:44:47] "GET /data HTTP/1.1" 200 -
+2025-10-09 17:44:59,283 - INFO - Fetched 33 expiration dates
+2025-10-09 17:44:59,283 - INFO - Using nearest expiry: 2025-10-09
+2025-10-09 17:45:00,869 - INFO - Fetched 126 call strikes and 126 put strikes
+2025-10-09 17:45:00,909 - INFO - Selected 17 strikes, Volume: Put Wall: 669.0, Call Wall: 672.0, POC: 671.0 | OI: Put Wall: 664.0, Call Wall: 676.0, POC: 672.0 | Total: Put Wall: 669.0, Call Wall: 672.0, POC: 671.0
+2025-10-09 17:45:02,036 - INFO - Fetched 391 1-minute Heikin-Ashi candles for SPY in market hours
+2025-10-09 17:45:02,486 - INFO - Fetched 389 1-minute Heikin-Ashi candles for $VIX in market hours
+2025-10-09 17:45:02,582 - INFO - VIX rise condition met at 2025-10-09 08:32:00: SPY high=673.92, Call Wall=672.00, VIX close=16.36, VIX prev close=16.36
+2025-10-09 17:45:02,582 - INFO - VIX rise condition met at 2025-10-09 08:33:00: SPY high=673.66, Call Wall=672.00, VIX close=16.37, VIX prev close=16.36
+2025-10-09 17:45:02,591 - INFO - VIX rise condition met at 2025-10-09 08:34:00: SPY high=673.57, Call Wall=672.00, VIX close=16.37, VIX prev close=16.37
+2025-10-09 17:45:02,591 - INFO - VIX rise condition met at 2025-10-09 08:35:00: SPY high=673.47, Call Wall=672.00, VIX close=16.38, VIX prev close=16.37
+2025-10-09 17:45:02,591 - INFO - VIX rise condition met at 2025-10-09 08:39:00: SPY high=673.58, Call Wall=672.00, VIX close=16.33, VIX prev close=16.34
+2025-10-09 17:45:02,591 - INFO - VIX rise condition met at 2025-10-09 08:40:00: SPY high=673.58, Call Wall=672.00, VIX close=16.34, VIX prev close=16.33
+2025-10-09 17:45:02,591 - INFO - VIX rise condition met at 2025-10-09 08:41:00: SPY high=673.44, Call Wall=672.00, VIX close=16.38, VIX prev close=16.34
+2025-10-09 17:45:02,591 - INFO - VIX rise condition met at 2025-10-09 08:42:00: SPY high=673.32, Call Wall=672.00, VIX close=16.42, VIX prev close=16.38
+2025-10-09 17:45:02,591 - INFO - VIX rise condition met at 2025-10-09 08:43:00: SPY high=673.12, Call Wall=672.00, VIX close=16.45, VIX prev close=16.42
+2025-10-09 17:45:02,600 - INFO - VIX rise condition met at 2025-10-09 08:44:00: SPY high=673.00, Call Wall=672.00, VIX close=16.49, VIX prev close=16.45
+2025-10-09 17:45:02,600 - INFO - VIX rise condition met at 2025-10-09 08:45:00: SPY high=672.91, Call Wall=672.00, VIX close=16.52, VIX prev close=16.49
+2025-10-09 17:45:02,600 - INFO - VIX rise condition met at 2025-10-09 08:46:00: SPY high=672.78, Call Wall=672.00, VIX close=16.51, VIX prev close=16.52
+2025-10-09 17:45:02,605 - INFO - VIX rise condition met at 2025-10-09 08:47:00: SPY high=672.68, Call Wall=672.00, VIX close=16.52, VIX prev close=16.51
+2025-10-09 17:45:02,605 - INFO - VIX rise condition met at 2025-10-09 08:50:00: SPY high=673.08, Call Wall=672.00, VIX close=16.45, VIX prev close=16.45
+2025-10-09 17:45:02,605 - INFO - VIX rise condition met at 2025-10-09 08:51:00: SPY high=672.97, Call Wall=672.00, VIX close=16.46, VIX prev close=16.45
+2025-10-09 17:45:02,605 - INFO - VIX rise condition met at 2025-10-09 08:52:00: SPY high=672.71, Call Wall=672.00, VIX close=16.55, VIX prev close=16.46
+2025-10-09 17:45:02,605 - INFO - VIX rise condition met at 2025-10-09 08:53:00: SPY high=672.46, Call Wall=672.00, VIX close=16.65, VIX prev close=16.55
+2025-10-09 17:45:02,605 - INFO - VIX rise condition met at 2025-10-09 08:54:00: SPY high=672.27, Call Wall=672.00, VIX close=16.70, VIX prev close=16.65
+2025-10-09 17:45:02,612 - INFO - VIX rise condition met at 2025-10-09 08:55:00: SPY high=672.11, Call Wall=672.00, VIX close=16.74, VIX prev close=16.70
+2025-10-09 17:45:02,612 - INFO - VIX rise condition met at 2025-10-09 08:58:00: SPY high=672.25, Call Wall=672.00, VIX close=16.69, VIX prev close=16.70
+2025-10-09 17:45:02,612 - INFO - VIX rise condition met at 2025-10-09 08:59:00: SPY high=672.23, Call Wall=672.00, VIX close=16.71, VIX prev close=16.69
+2025-10-09 17:45:02,615 - INFO - VIX rise condition met at 2025-10-09 09:00:00: SPY high=672.03, Call Wall=672.00, VIX close=16.77, VIX prev close=16.71
+2025-10-09 17:45:02,615 - INFO - VIX rise condition met at 2025-10-09 09:08:00: SPY high=672.18, Call Wall=672.00, VIX close=16.70, VIX prev close=16.69
+2025-10-09 17:45:02,615 - INFO - VIX rise condition met at 2025-10-09 09:09:00: SPY high=672.01, Call Wall=672.00, VIX close=16.73, VIX prev close=16.70
+2025-10-09 17:45:02,615 - INFO - VIX rise condition met at 2025-10-09 09:10:00: SPY high=672.03, Call Wall=672.00, VIX close=16.74, VIX prev close=16.73
+2025-10-09 17:45:02,615 - INFO - VIX rise condition met at 2025-10-09 09:11:00: SPY high=672.02, Call Wall=672.00, VIX close=16.75, VIX prev close=16.74
+2025-10-09 17:45:02,623 - INFO - VIX rise condition met at 2025-10-09 09:13:00: SPY high=672.07, Call Wall=672.00, VIX close=16.74, VIX prev close=16.73
+2025-10-09 17:45:02,623 - INFO - VIX rise condition met at 2025-10-09 09:14:00: SPY high=672.09, Call Wall=672.00, VIX close=16.74, VIX prev close=16.74
+2025-10-09 17:45:03,527 - INFO - 127.0.0.1 - - [09/Oct/2025 17:45:03] "GET /data HTTP/1.1" 200 -
